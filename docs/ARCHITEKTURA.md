@@ -20,7 +20,7 @@
 
 ## Datový model a kompatibilita
 
-Zápas je JSON dokument; `data/priklad-zapasu.json` obsahuje reálný příklad. `data/priklad-zalohy.txt` obsahuje obálku `{app, v, saved, games}`. Po načtení starších dat vždy zavolejte `normalize()`.
+Zápas je JSON dokument. Import/export zálohy používá obálku `{app, v, saved, games}`; ukázkové soubory jsou v plné verzi projektu. Po načtení starších dat vždy zavolejte `normalize()`.
 
 Souřadnice mají jednotky metry a střed tee `(0,0)`; kladná osa y směřuje k hog line. Při rozšíření modelu zachovejte existující hodnoty, identifikátory i historické zálohy.
 
@@ -41,4 +41,4 @@ Kód CSS byl bezpečně přemístěn do jediného souboru a historické vrstvy p
 
 ## Ověření před produkcí
 
-Spusťte statický test a Playwright smoke test, následně ručně otestujte Safari iOS, Chrome Android, desktop, tmavý režim, offline start, zálohu a import. Samostatně vyzkoušejte klasický curling, triples a mixed doubles. API a databáze vyžadují vlastní integrační testy.
+V plném balíčku spusťte statický test a Playwright smoke test; v této odlehčené verzi ručně otestujte Safari iOS, Chrome Android, desktop, tmavý režim, offline start, zálohu a import. Samostatně vyzkoušejte klasický curling, triples a mixed doubles. API a databáze vyžadují vlastní integrační testy.

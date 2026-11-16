@@ -14,22 +14,13 @@ Tento dokument je pro vývojáře, který aplikaci napojí na databázi a uživa
 | `js/rules-data.js` | Česky psaný rejstřík pravidel, oddělený od logiky. |
 | `README.md`, `docs/ARCHITEKTURA.md` | Spuštění, orientace pro programátora, postup integrace. |
 | `PREDANI.md` | Tento dokument. |
-| `data/priklad-zapasu.json` | Jeden vyplněný zápas: přesně ten objekt, který aplikace ukládá. |
-| `data/priklad-zalohy.txt` | Záloha ve formátu, který aplikace stahuje a umí znovu nahrát (všechny zápasy). |
-| `testy/smoke.test.js` | Automatický test hlavních funkcí (Playwright, notebook i mobil). |
-| `testy/structure.test.js` | Statická kontrola projektu bez instalace závislostí. |
 | `licence/` | Licence vložených písem Oswald a Inter (SIL Open Font License 1.1). Při šíření je přikládejte. |
 
 ## Spuštění
 
 Stačí otevřít `index.html` v prohlížeči, nebo ho vystavit na libovolném statickém hostingu. Pro vývoj můžete použít třeba `npx serve .` a otevřít `http://localhost:3000`.
 
-Test:
-
-```bash
-npm install && npx playwright install chromium
-APP_URL=http://localhost:3000/ npm run test:e2e
-```
+Testovací skripty a ukázková data jsou k dispozici pouze v původní kompletní verzi projektu. Tato odlehčená verze je určena pro běh a údržbu aplikace.
 
 ## Jak je aplikace postavená
 

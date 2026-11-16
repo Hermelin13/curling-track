@@ -21,36 +21,17 @@ curling-track/
 ├── css/app.css            # všechny styly + vestavěná offline písma
 ├── js/rules-data.js       # česky sepsaný rejstřík pravidel
 ├── js/app.js              # stav, datový model, logika, vykreslení, události
-├── data/
-│   ├── priklad-zapasu.json
-│   └── priklad-zalohy.txt
-├── testy/
-│   ├── smoke.test.js      # Playwright: notebook a mobil
-│   └── structure.test.js  # rychlá kontrola souborů a příkladů bez závislostí
 ├── docs/ARCHITEKTURA.md  # orientace v kódu a napojení API
 ├── licence/              # SIL OFL licence Oswald a Inter
 ├── PREDANI.md            # předání a původní požadavky k nasazení
-└── package.json
+└── .gitignore
 ```
 
 **Pořadí skriptů je důležité:** `rules-data.js` načte globální `window.CURLING_RULEBOOK`, na který následně odkazuje `app.js`. Oba skripty jsou `defer`.
 
-## Testy
+## O této verzi
 
-Rychlý test bez instalace závislostí:
-
-```bash
-node testy/structure.test.js
-```
-
-Test uživatelského rozhraní v Playwrightu:
-
-```bash
-npm install
-npx playwright install chromium
-npm run test:e2e
-# nebo APP_URL=http://localhost:8080/ npm run test:e2e
-```
+Jde o odlehčenou variantu projektu: obsahuje všechny soubory potřebné pro běh aplikace, licence a dokumentaci. Volitelné ukázkové exporty, automatické testy a `package.json` jsou vynechány. Pro kompletní testovací a předávací sadu použijte původní plný balíček.
 
 ## Ukládání a bezpečnost dat
 
