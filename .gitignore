@@ -1,0 +1,43 @@
+# Závislosti instalované lokálně (např. Playwright)
+node_modules/
+
+# Výsledky testů a reporty
+playwright-report/
+test-results/
+coverage/
+.nyc_output/
+
+# Logy a dočasné soubory
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tmp
+*.temp
+*.swp
+*~
+
+# Lokální konfigurace a tajné údaje
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Cache a systémové soubory
+.cache/
+.DS_Store
+Thumbs.db
+__pycache__/
+.pytest_cache/
+
+# Nastavení vývojových editorů
+.vscode/
+.idea/
+
+# Lokálně generované archivy a exporty
+*.zip
+*.tar.gz
+
+# POZOR: data/*.json, ukázkové zálohy, licence i zdrojové soubory
+# patří do repozitáře a záměrně zde nejsou ignorovány.

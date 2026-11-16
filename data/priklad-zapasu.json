@@ -1,0 +1,1761 @@
+{
+  "id": "gmwi7qf5y4cju1",
+  "format": "classic",
+  "event": "Ukázkový zápas",
+  "date": "2026-11-08",
+  "us": {
+    "name": "TJ Ledňáčci",
+    "color": "red",
+    "players": [
+      "Kateřina Nováková",
+      "Tereza Malá",
+      "Jana Horáková",
+      "Eva Svobodová"
+    ],
+    "alts": [
+      "",
+      ""
+    ],
+    "coach": ""
+  },
+  "them": {
+    "name": "CC Severka",
+    "players": [
+      "Petra Králová",
+      "Lucie Dvořáková",
+      "Markéta Černá",
+      "Hana Veselá"
+    ],
+    "alts": [
+      "",
+      ""
+    ],
+    "coach": ""
+  },
+  "hammerStart": "them",
+  "subs": {
+    "us": null,
+    "them": null
+  },
+  "ends": [
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "Guard",
+          "turn": "In",
+          "x": 0.05,
+          "y": 3.2,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Guard",
+          "turn": "Out",
+          "x": -1,
+          "y": 2.6,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Come-around",
+          "turn": "Out",
+          "x": 0.15,
+          "y": 0.45,
+          "out": false,
+          "rating": 50,
+          "note": "Měl skončit za stráží, zůstal odkrytý.",
+          "moves": [],
+          "removedBy": 5
+        },
+        {
+          "pname": null,
+          "shot": "Come-around",
+          "turn": "In",
+          "x": -0.9,
+          "y": -0.3,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "In",
+          "x": -0.45,
+          "y": 0.2,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": 9
+        },
+        {
+          "pname": null,
+          "shot": "Hit & roll",
+          "turn": "Out",
+          "x": 0.25,
+          "y": 0.35,
+          "out": false,
+          "rating": 50,
+          "note": "",
+          "moves": [],
+          "removedBy": 6
+        },
+        {
+          "pname": null,
+          "shot": "Takeout",
+          "turn": "In",
+          "x": 0.2,
+          "y": 0.38,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "Out",
+          "x": 0.6,
+          "y": -0.6,
+          "out": false,
+          "rating": 0,
+          "note": "Měl kousnout do 4 ft, přejel.",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Guard",
+          "turn": "In",
+          "x": 0.35,
+          "y": 2.4,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Double",
+          "turn": "In",
+          "x": null,
+          "y": null,
+          "out": true,
+          "rating": 50,
+          "note": "Vyrazil jen jeden kámen, sám vyjel.",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Freeze",
+          "turn": "Out",
+          "x": -0.2,
+          "y": -0.15,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Takeout",
+          "turn": "Out",
+          "x": -1.1,
+          "y": -1.4,
+          "out": false,
+          "rating": 0,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Guard",
+          "turn": "In",
+          "x": -0.1,
+          "y": 1.6,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Come-around",
+          "turn": "Out",
+          "x": 0.05,
+          "y": 0.05,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [
+            {
+              "by": 14,
+              "x": 0.1,
+              "y": -0.7
+            }
+          ],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Tap",
+          "turn": "In",
+          "x": 0.05,
+          "y": 0.15,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "In",
+          "x": -0.05,
+          "y": 0.08,
+          "out": false,
+          "rating": 100,
+          "note": "Přesný draw na jedničku.",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 0,
+        "them": 1
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 4,
+        "goal": "Vynutit 1",
+        "met": "ano",
+        "note": "Středová stráž a trpělivá hra, soupeř musel brát jedničku posledním kamenem."
+      }
+    },
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "Guard",
+          "turn": "Out",
+          "x": 0,
+          "y": 3,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Guard",
+          "turn": "In",
+          "x": 1,
+          "y": 2.8,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "In",
+          "x": 0.1,
+          "y": 1.1,
+          "out": false,
+          "rating": 50,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Come-around",
+          "turn": "In",
+          "x": 0.85,
+          "y": 0.1,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Takeout",
+          "turn": "Out",
+          "x": 1.6,
+          "y": -1.2,
+          "out": false,
+          "rating": 0,
+          "note": "Netrefil, kámen za stráží zůstal.",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "Out",
+          "x": 0.55,
+          "y": -0.35,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Freeze",
+          "turn": "In",
+          "x": 0.3,
+          "y": -0.5,
+          "out": false,
+          "rating": 50,
+          "note": "",
+          "moves": [
+            {
+              "by": 7,
+              "x": 0.35,
+              "y": -1.3
+            }
+          ],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Tap",
+          "turn": "Out",
+          "x": 0.35,
+          "y": -0.45,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": 8
+        },
+        {
+          "pname": null,
+          "shot": "Hit & roll",
+          "turn": "In",
+          "x": 0.5,
+          "y": -0.6,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": 9
+        },
+        {
+          "pname": null,
+          "shot": "Takeout",
+          "turn": "Out",
+          "x": 0.45,
+          "y": -0.55,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "Out",
+          "x": -0.05,
+          "y": 0.1,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": 11
+        },
+        {
+          "pname": null,
+          "shot": "Hit & roll",
+          "turn": "In",
+          "x": -0.25,
+          "y": 0.05,
+          "out": false,
+          "rating": 50,
+          "note": "Plán byl zůstat na středu, odjel doleva.",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Guard",
+          "turn": "In",
+          "x": 0.3,
+          "y": 1.8,
+          "out": false,
+          "rating": 50,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "Out",
+          "x": 0.2,
+          "y": -0.2,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": 14
+        },
+        {
+          "pname": null,
+          "shot": "Double",
+          "turn": "In",
+          "x": 0.15,
+          "y": -0.3,
+          "out": false,
+          "rating": 50,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "Draw",
+          "turn": "In",
+          "x": 0,
+          "y": -0.05,
+          "out": false,
+          "rating": 100,
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 2,
+        "them": 0
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 3,
+        "goal": "Skórovat 2+",
+        "met": "ano",
+        "note": "Třetí riskovala hit & roll místo čistého vyražení. Vyšlo to, ale bylo to zbytečné riziko."
+      }
+    },
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 0,
+        "them": 1
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 4,
+        "goal": "Vynutit 1",
+        "met": "ano",
+        "note": "Dvě středové stráže, soupeř bral jedničku."
+      }
+    },
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 0,
+        "them": 0
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 4,
+        "goal": "Blank",
+        "met": "ano",
+        "note": "Bez šance na dvojku, čistý end a kladivo zůstalo nám."
+      }
+    },
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 3,
+        "them": 0
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 5,
+        "goal": "Skórovat 2+",
+        "met": "ano",
+        "note": "Hra do rohových stráží, skip dorazil trojku."
+      }
+    },
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 0,
+        "them": 2
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 2,
+        "goal": "Omezit ztrátu",
+        "met": "částečně",
+        "note": "Zbytečný come-around místo vyčištění, soupeř skóroval dvojku."
+      }
+    },
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 1,
+        "them": 0
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 3,
+        "goal": "Skórovat 2+",
+        "met": "ne",
+        "note": "Soupeř hrál vyrážecí hru, vzali jsme jedničku."
+      }
+    },
+    {
+      "stones": [
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        },
+        {
+          "pname": null,
+          "shot": "",
+          "turn": "",
+          "x": null,
+          "y": null,
+          "out": false,
+          "rating": "",
+          "note": "",
+          "moves": [],
+          "removedBy": null
+        }
+      ],
+      "score": {
+        "us": 0,
+        "them": 1
+      },
+      "hammer": null,
+      "pp": null,
+      "mdFirst": {
+        "us": null,
+        "them": null
+      },
+      "tactic": {
+        "rating": 4,
+        "goal": "Vynutit 1",
+        "met": "ano",
+        "note": "S náskokem jsme hráli čistě, soupeř bral jedničku."
+      }
+    }
+  ],
+  "summary": {
+    "tactic": 4,
+    "exec": 3,
+    "mental": 4,
+    "worked": "Středové stráže bez kladiva a trpělivá hra v 1. a 3. endu. Second hrála výborně freeze i tapy.",
+    "improve": "Hit & roll třetí – dvakrát odjela ze středu. Draw do 4 ft s out-turnem.",
+    "conclusion": "Těsná výhra 6:5. Na tréninku: hit & roll ze středu a draw na 4 ft s out-turnem."
+  },
+  "sample": true,
+  "created": 1794770026055,
+  "updated": 1794770026055
+}

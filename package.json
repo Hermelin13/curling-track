@@ -1,0 +1,13 @@
+{
+  "name": "curling-track",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Statický trenérský zápisník curlingu CB BUTCHERS",
+  "scripts": {
+    "test": "node testy/structure.test.js",
+    "test:e2e": "node testy/smoke.test.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.0"
+  }
+}
