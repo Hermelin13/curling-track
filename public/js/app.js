@@ -438,8 +438,11 @@ function renderBoard(){
 function renderMeta(){
   const g=cur();const el=$('#meta');
   if(!g||!metaOpen){el.innerHTML='';return}
-  const pl=(team)=>Array.from({length:FM.players},(_,i)=>i).map(i=>`<div class="field"><label class="lbl" for="m-${team}-p${i}">${FM.roster[i]}</label><input type="text" id="m-${team}-p${i}" value="${esc(g[team].players[i])}" placeholder="Jméno"></div>`).join('');
-  const extra=(t)=>`${FM.alts?'':'<p class="effects" style="margin:0">Náhradníci nejsou v mixed doubles povoleni.</p>'}<div class="row2">${Array.from({length:FM.alts},(_,i)=>i).map(i=>`<div class="field"><label class="lbl" for="m-${t}-a${i}">${FM.alts>1?'Náhradník '+(i+1):'Náhradník'}</label><input type="text" id="m-${t}-a${i}" value="${esc(g[t].alts[i])}" placeholder="Jméno"></div>`).join('')}</div><div class="field"><label class="lbl" for="m-${t}-coach">Trenér</label><input type="text" id="m-${t}-coach" value="${esc(g[t].coach)}" placeholder="Jméno"></div>`;
+  // Soupiska týmu je v Cloudflare D1. Nabídka je jen pro náš tým, soupeře lze nadále zadat ručně.
+  const databaseRoster=[...new Set((window.CurlCloud?.roster()||[]).map(n=>String(n).trim()).filter(Boolean))];
+  const rosterSelect=(team,inputId)=>team==='us'&&databaseRoster.length?`<select class="roster-pick" data-roster-target="${inputId}" aria-label="Vybrat hráče ze soupisky"><option value="">Vybrat ze soupisky (${databaseRoster.length})…</option>${databaseRoster.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')}</select>`:'';
+  const pl=(team)=>Array.from({length:FM.players},(_,i)=>i).map(i=>{const fieldId=`m-${team}-p${i}`;return `<div class="field"><label class="lbl" for="${fieldId}">${FM.roster[i]}</label><input type="text" id="${fieldId}" value="${esc(g[team].players[i])}" placeholder="Jméno">${rosterSelect(team,fieldId)}</div>`}).join('');
+  const extra=(t)=>`${FM.alts?'':'<p class="effects" style="margin:0">Náhradníci nejsou v mixed doubles povoleni.</p>'}<div class="row2">${Array.from({length:FM.alts},(_,i)=>i).map(i=>{const fieldId=`m-${t}-a${i}`;return `<div class="field"><label class="lbl" for="${fieldId}">${FM.alts>1?'Náhradník '+(i+1):'Náhradník'}</label><input type="text" id="${fieldId}" value="${esc(g[t].alts[i])}" placeholder="Jméno">${rosterSelect(t,fieldId)}</div>`}).join('')}</div><div class="field"><label class="lbl" for="m-${t}-coach">Trenér</label><input type="text" id="m-${t}-coach" value="${esc(g[t].coach)}" placeholder="Jméno"></div>`;
   el.innerHTML=`<details class="meta" id="metad" ${metaOpen?'open':''}>
     <summary>Zápas a rozpiska</summary>
     <div class="metagrid">
@@ -1229,6 +1232,8 @@ document.getElementById('app').addEventListener('click',ev=>{
   }
   touch();renderWork();
 });
+// Po změně databázové soupisky aktualizovat nabídky i v již otevřeném zápase.
+window.addEventListener('curl:roster-updated',()=>{if(metaOpen)renderMeta()});
 document.getElementById('app').addEventListener('toggle',ev=>{if(ev.target.id==='metad'&&!ev.target.open){metaOpen=false;setTimeout(()=>{renderMeta();renderBoard()},0)}if(ev.target.id==='bkd')bkOpen=ev.target.open},true);
 document.getElementById('app').addEventListener('input',ev=>{
   if(ev.target.id==='rules-q'){filterRules(ev.target.value);return}
@@ -1253,6 +1258,14 @@ document.getElementById('app').addEventListener('change',ev=>{
   if(id==='gamesel'){curId=el.value;lsSet('curl.cur',curId);confirmDel=false;resetEndPos(0);render();return}
   if(!g||readOnly)return;
   const end=g.ends[curEnd];
+  // Výběr jména vyplní související textové pole; existující input handler uloží změnu zápasu.
+  if(el.matches('select.roster-pick')){
+    if(readOnly||!el.value)return;
+    const field=document.getElementById(el.dataset.rosterTarget);
+    if(field){field.value=el.value;field.dispatchEvent(new Event('input',{bubbles:true}))}
+    el.value='';
+    return;
+  }
   if(id==='m-color'){g.us.color=el.value;touch();render();return}
   if(id==='m-hammer'){g.hammerStart=el.value;touch();render();return}
   if(id==='m-ends'){const n=Math.max(1,Math.min(12,parseInt(el.value,10)||g.ends.length));while(g.ends.length<n)g.ends.push(newEnd());
