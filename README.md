@@ -1,9 +1,20 @@
-# Curling-track
+## Režim zapisování (novinka)
+
+V záložce **Endy a kameny** klikněte nahoře na **Režim zapisování**. Led zůstane
+trvale **vlevo**, editace hodu (rotace, typ rány, umístění, hodnocení) **vpravo**.
+Tlačítka **Výsledek endu** a **Cíl endu** zobrazí příslušný formulář v pravém
+panelu, aniž by se skryl led. Tlačítko **Zobrazit skóre a menu** zpřístupní
+horní lištu; stejným tlačítkem ji opět skryjete. **Ukončit režim** vrátí
+původní zobrazení. Na malých displejích se posouvá pouze obsah editoru,
+ne celá stránka. Nedochází ke změně datového formátu ani ukládání.
+
+# Curling-track – webová verze pro Cloudflare Pages
+
 Tato verze je **připravená k publikaci na Cloudflare Pages**. Nevyžaduje framework ani kompilaci.
 
 > **Pozor:** V této fázi jde pouze o zpřístupnění webu na internetu. Není připojená databáze ani přihlášení. Zápasy se **stále ukládají do localStorage v prohlížeči**, nikoli na Cloudflare. Nezadávejte do veřejně dostupné stránky citlivá data; dokud nemáte účty a zabezpečení, web je veřejný. Stáhněte si zálohy starších zápasů před přechodem na databázi.
 
-## Jak publikovat přes Cloudflare Pages
+## Jak publikovat přes Cloudflare Pages (doporučeno: GitHub)
 
 1. Nahrajte **celou složku projektu** do svého GitHub repozitáře (včetně `public/` a dokumentace).
 2. V Cloudflare dashboardu otevřete **Workers & Pages → Create application → Pages → Connect to Git**.
@@ -57,9 +68,3 @@ Přidat přihlášení a serverové API (Cloudflare Workers/Pages Functions + Cl
 - Direct Upload: https://developers.cloudflare.com/pages/get-started/direct-upload/
 
 © 2026 CB BUTCHERS. Všechna práva vyhrazena. Licence vložených písem najdete v `licence/`.
-
-## Rozložení bez posouvání celé stránky
-
-Stránka nyní využívá výšku okna (`100dvh`) a **samotný dokument nemá svislý scroll**. Hlavička, skóre a navigace zůstávají viditelné. Obsah aktivní záložky (`#body`) je samostatně posuvný, pokud se kvůli množství údajů nevejde na obrazovku. Na malých telefonech tak aplikace zachovává čitelnost a neodřezává ovládací prvky. Mobilní spodní navigace a rychlé hodnocení zůstávají připnuté.
-
-Úpravy rozložení jsou na konci `public/css/app.css` pod komentářem **REŽIM JEDNÉ OBRAZOVKY**.
