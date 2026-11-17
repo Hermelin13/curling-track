@@ -6,7 +6,7 @@ const encoder=new TextEncoder();
 function bytesHex(bytes){return [...bytes].map(b=>b.toString(16).padStart(2,'0')).join('')}
 function hexBytes(hex){return new Uint8Array(hex.match(/.{2}/g).map(x=>parseInt(x,16)))}
 async function digest(value){return bytesHex(new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(value))))}
-async function passwordHash(password,salt){const key=await crypto.subtle.importKey('raw',encoder.encode(password),'PBKDF2',false,['deriveBits']);return bytesHex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:hexBytes(salt),iterations:210000},key,256)))}
+async function passwordHash(password,salt){const key=await crypto.subtle.importKey('raw',encoder.encode(password),'PBKDF2',false,['deriveBits']);return bytesHex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:hexBytes(salt),iterations:100000},key,256)))}
 function randomHex(n){const bytes=crypto.getRandomValues(new Uint8Array(n));return bytesHex(bytes)}
 function equal(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;let diff=0;for(let i=0;i<a.length;i++)diff|=a.charCodeAt(i)^b.charCodeAt(i);return diff===0}
 async function credentials(name,password){if(typeof name!=='string'||! /^[a-z0-9_.-]{3,40}$/.test(name))throw new Error('Přihlašovací jméno: 3–40 znaků a-z, 0-9, _, -, .');if(typeof password!=='string'||password.length<12||password.length>128)throw new Error('Heslo musí mít 12–128 znaků.');const salt=randomHex(16);return {salt,hash:await passwordHash(password,salt)}}
