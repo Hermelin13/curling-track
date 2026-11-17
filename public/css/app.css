@@ -237,7 +237,7 @@ th:first-child,td:first-child{text-align:left}
 td.name{white-space:normal;min-width:130px}
 .bar{display:flex;align-items:center;gap:8px;justify-content:flex-end}
 .bar i{display:block;height:8px;border-radius:4px;background:var(--line);width:90px;position:relative;overflow:hidden}
-.bar i b{position:absolute;inset:0 auto 0 0;background:var(--accent)}
+.bar i b{position:absolute;inset:0;background:var(--accent);transform-origin:left center}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:14px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .kpi{background:var(--surface-2);border-radius:8px;padding:10px 12px}
@@ -301,7 +301,7 @@ td.name{white-space:normal;min-width:130px}
 .seasonhead .seg button{white-space:nowrap}
 .seasonhead select{min-width:200px}
 .spark{display:inline-flex;align-items:flex-end;gap:2px;height:26px;vertical-align:middle}
-.spark i{width:7px;border-radius:2px 2px 0 0;background:var(--accent);opacity:.85}
+.spark i{width:7px;height:100%;transform-origin:bottom center;border-radius:2px 2px 0 0;background:var(--accent);opacity:.85}
 .spark i.mid{background:var(--warn)} .spark i.lo{background:var(--bad)} .spark i.hi{background:var(--good)}
 .spark i.na{height:3px;background:var(--line)}
 .trend{font-size:.82rem;font-weight:600;white-space:nowrap;color:var(--muted)}
