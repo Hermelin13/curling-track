@@ -3,7 +3,7 @@ Tato verze je **připravená k publikaci na Cloudflare Pages**. Nevyžaduje fram
 
 > **Pozor:** V této fázi jde pouze o zpřístupnění webu na internetu. Není připojená databáze ani přihlášení. Zápasy se **stále ukládají do localStorage v prohlížeči**, nikoli na Cloudflare. Nezadávejte do veřejně dostupné stránky citlivá data; dokud nemáte účty a zabezpečení, web je veřejný. Stáhněte si zálohy starších zápasů před přechodem na databázi.
 
-## Jak publikovat přes Cloudflare Pages (doporučeno: GitHub)
+## Jak publikovat přes Cloudflare Pages
 
 1. Nahrajte **celou složku projektu** do svého GitHub repozitáře (včetně `public/` a dokumentace).
 2. V Cloudflare dashboardu otevřete **Workers & Pages → Create application → Pages → Connect to Git**.
