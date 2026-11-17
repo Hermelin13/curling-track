@@ -1109,12 +1109,12 @@ document.getElementById('app').addEventListener('click',ev=>{
     case'bmore':moreOpen=!moreOpen;renderTabs();return;
     case'tab':moreOpen=false;tab=v;renderTabs();renderBody();applyRO();
       /* na mobilu a tabletu začít každou záložku od začátku stránky */
-      try{if(matchMedia('(max-width:1180px), (pointer:coarse)').matches){document.scrollingElement.scrollTop=0;window.scrollTo(0,0)}}catch(e){}
+      try{if(matchMedia('(max-width:1180px), (pointer:coarse)').matches){document.getElementById('body').scrollTop=0}}catch(e){}
       return;
     case'end':resetEndPos(+v);renderEndbar();if(tab==='order')renderOrder();else renderWork();return;
     case'addend':g.ends.push(newEnd());touch();resetEndPos(g.ends.length-1);renderBoard();renderMeta();renderEndbar();if(tab==='order')renderOrder();else renderWork();return;
     case'stone':curStone=+v;movingK=null;if(mode!=='place'&&curStone===0)mode='place';
-      if(tab!=='ends'){tab='ends';renderTabs();renderBody();applyRO();window.scrollTo({top:0})}else renderWork();return;
+      if(tab!=='ends'){tab='ends';renderTabs();renderBody();applyRO();document.getElementById('body').scrollTop=0}else renderWork();return;
     case'prev':if(curStone>0){curStone--;movingK=null;if(curStone===0)mode='place'}renderWork();return;
     case'next':if(curStone<FM.stones-1){curStone++;movingK=null}renderWork();return;
     case'view':view=isZoomed()?'full':'house';renderWork();return;

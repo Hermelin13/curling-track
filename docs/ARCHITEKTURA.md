@@ -1,3 +1,5 @@
+> **Poznámka pro tuto verzi:** Publikovaný web je ve složce `public/` (`public/index.html`, `public/js/`, `public/css/`). Níže uvedené názvy souborů jsou relativní ke složce `public/`. Serverová databáze zatím není zapojená.
+
 # Architektura a předání vývojáři
 
 ## Tok aplikace
