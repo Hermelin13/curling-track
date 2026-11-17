@@ -44,7 +44,8 @@ const RATES=[100,75,50,25,0];
 const isRated=s=>typeof s.rating==='number';
 const rateLabel=v=>v+'\u00a0%';
 const GOALS=['Skórovat 2+','Vynutit 1','Ukrást','Blank','Omezit ztrátu'];
-const METS={ano:'Splněno',částečně:'Částečně',ne:'Nesplněno'};
+const METS={ano:'Splněno',ne:'Nesplněno'};
+METS['\u010d\u00e1ste\u010dn\u011b']='Částečně';
 const R12=1.829,R8=1.219,R4=0.61,RB=0.152,RS=0.145,HOUSE=R12+RS,HOG=6.401,BACK=-1.829,HALFW=2.375;
 
 const $=s=>document.querySelector(s);
@@ -276,6 +277,10 @@ const pctOf=(o)=>o.n?Math.round(o.sum/o.n):null;
 const PHONE_MQ='(max-width:720px)';
 function isZoomed(){try{return view==='house'&&matchMedia(PHONE_MQ).matches}catch(e){return false}}
 let games={},loaded=false,curId=null,curEnd=0,curStone=0,mode='place',movingK=null,tab='ends',view='full',readOnly=false,metaOpen=false,confirmDel=false;
+// Režim zápisu mění jen rozložení; data zápasů ani způsob ukládání nemění.
+let focusMode=false,focusHeaderOpen=false,focusDrawer=null;
+function syncFocusLayout(){document.body.classList.toggle('focus-mode',focusMode&&tab==='ends'&&!!cur());document.body.classList.toggle('focus-head-open',focusHeaderOpen);}
+
 let bkOpen=false,statusText='Načítám zápasy…';
 /* krok zpět: zásobník stavů aktuálního zápasu (psaní do textových polí se slučuje do jednoho kroku) */
 let undoStack=[],lastSnap=null,undoFor=null,lastTouchT=0,mergeNext=false;
@@ -345,7 +350,7 @@ addEventListener('pagehide',flushSaves);document.addEventListener('visibilitycha
 function loadLocal(){try{const o=JSON.parse(lsGet('curl.games')||'{}');for(const id in o)games[id]=normalize(o[id])}catch(e){}}
 
 /* ---------- render ---------- */
-function render(){useFmt(cur());if(undoFor!==curId){undoStack=[];lastSnap=cur()?JSON.stringify(cur()):null;undoFor=curId}renderHeader();renderBoard();renderMeta();renderTabs();renderBody();applyRO()}
+function render(){useFmt(cur());if(undoFor!==curId){undoStack=[];lastSnap=cur()?JSON.stringify(cur()):null;undoFor=curId}syncFocusLayout();renderHeader();renderBoard();renderMeta();renderTabs();renderBody();applyRO()}
 function applyRO(){
   document.body.classList.toggle('ro',readOnly);
   if(!readOnly)return;
@@ -373,6 +378,7 @@ function renderHeader(){
           <textarea id="bk-text" class="nav" placeholder="Sem vložte text zálohy…"></textarea>
           <div class="confirm"><button class="btn small nav" data-act="bkrestore">Obnovit</button></div>
         </div></details>
+      <button class="btn focus-entry nav" data-act="focus-toggle" aria-pressed="${focusMode}">${focusMode?'Běžný režim':'Režim zapisování'}</button>
       ${themeSwitch()}
     </div>
     <div class="status"><span id="status" aria-live="polite">${esc(statusText)}</span> <span id="bk-msg" aria-live="polite"></span></div>`;
@@ -478,7 +484,7 @@ function renderBody(){
   if(tab==='rules'){b.innerHTML=rulesHTML();return}
   const g=cur();
   if(!g){b.innerHTML=`<div class="empty-state"><h2>Zatím žádný zápas</h2><p class="muted">Založte nový zápas a zapisujte kámen po kameni. Nebo si nahrajte ukázku a podívejte se, jak vypadá vyplněný zápis.</p><div class="confirm"><button class="btn primary ed" data-act="newgame">${icon('plus')}<span>Nový zápas</span></button><button class="btn ed" data-act="loadsample">Nahrát ukázku</button></div></div>`;return}
-  if(tab==='ends'){b.innerHTML=`<div class="endbar" id="endbar"></div><div class="work" id="work" style="margin-top:12px"></div>`;renderEndbar();renderWork()}
+  if(tab==='ends'){b.innerHTML=`<div class="focus-toolbar" role="toolbar" aria-label="Ovládání režimu zapisování"><button class="btn small nav" data-act="focus-header" aria-expanded="${focusHeaderOpen}">${focusHeaderOpen?'Skrýt skóre a menu':'Zobrazit skóre a menu'}</button><span class="focus-caption">Zapisování · End ${curEnd+1}</span><button class="btn small nav" data-act="focus-exit">Ukončit režim</button></div><div class="endbar" id="endbar"></div><div class="work" id="work" style="margin-top:12px"></div>`;renderEndbar();renderWork()}
   else if(tab==='order'){b.innerHTML=`<div class="endbar" id="endbar"></div><div id="orderview" style="margin-top:12px"></div>`;renderEndbar();renderOrder()}
   else if(tab==='stats')b.innerHTML=statsHTML(g);
   else if(tab==='season')b.innerHTML=seasonHTML(g);
@@ -605,7 +611,16 @@ function subIcon(g,i){const who=['us','them'].filter(t=>subsAt(g,i,t));if(!who.l
   return `<span class="sw" title="${esc(tip)}" aria-label="${esc(tip)}">${who.map(t=>`<i class="c-${colorOf(g,t)}"></i>`).join('')}<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14l-4-4"/><path d="M20 16H6l4 4"/></svg></span>`}
 function renderWork(){
   const g=cur();const el=$('#work');if(!el)return;
-  el.innerHTML=`${mbarHTML(g)}<section class="sheetcol">${sheetPanel(g)}</section><section class="side">${editorHTML(g)}${FM.key==='md'?mdPanelHTML(g):''}${resultHTML(g)}${tacticHTML(g)}</section>`;
+  el.innerHTML=focusMode&&tab==='ends'
+    ? `<section class="sheetcol">${sheetPanel(g)}</section><section class="side focus-side">
+         <div class="focus-side-heading"><span>Kámen ${lab(curStone)} · End ${curEnd+1}</span><div class="focus-actions">
+           <button class="btn small nav ${focusDrawer==='score'?'primary':''}" data-act="focus-drawer" data-v="score" aria-expanded="${focusDrawer==='score'}">Výsledek endu</button>
+           <button class="btn small nav ${focusDrawer==='goal'?'primary':''}" data-act="focus-drawer" data-v="goal" aria-expanded="${focusDrawer==='goal'}">Cíl endu</button>
+         </div></div>
+         <div class="focus-editor">${editorHTML(g)}${FM.key==='md'?mdPanelHTML(g):''}</div>
+         ${focusDrawer?`<div class="focus-drawer" role="region" aria-label="${focusDrawer==='score'?'Výsledek endu':'Cíl endu'}"><div class="focus-drawer-head"><strong>${focusDrawer==='score'?'Výsledek endu':'Cíl a taktika endu'}</strong><button class="btn small nav" data-act="focus-close">Zavřít ×</button></div>${focusDrawer==='score'?resultHTML(g):tacticHTML(g)}</div>`:''}
+       </section>`
+    : `${mbarHTML(g)}<section class="sheetcol">${sheetPanel(g)}</section><section class="side">${editorHTML(g)}${FM.key==='md'?mdPanelHTML(g):''}${resultHTML(g)}${tacticHTML(g)}</section>`;
   applyRO();
 }
 /* mixed doubles: rozestavení endu (power play) a kdo hází 1. a 5. kámen */
@@ -792,10 +807,6 @@ function subsText(g,t,sb){if(!sb)return'';if(sb.reorder)return'změna pořadí v
 function subsList(g){const items=[];g.ends.forEach((_,e)=>['us','them'].forEach(t=>{const sb=subsAt(g,e,t);if(sb)items.push(`<li><b>End ${e+1}</b> · ${esc(g[t].name)}: ${subsText(g,t,sb)}</li>`)}));return items.length?`<h3 style="margin-top:10px">Střídání</h3><ul style="margin:0;padding-left:18px">${items.join('')}</ul>`:''}
 /* nabídka pro nastupujícího hráče: náhradníci podle rozpisky */
 function altOpts(g,t){return Array.from({length:FM.alts},(_,i)=>i).map(i=>{const n=(g[t].alts[i]||'').trim();return{v:n||'Náhradník '+(i+1),l:n?`${n} (náhradník ${i+1})`:'Náhradník '+(i+1)}})}
-function refreshEndSide(){const g=cur();if(!g)return;
-  const ed=$('#ed-panel');if(ed&&!ed.contains(document.activeElement))ed.outerHTML=editorHTML(g);
-  const lp=$('#list-panel');if(lp)lp.outerHTML=listHTML(g);
-  renderEndbar();applyRO();}
 
 /* stats */
 function collect(g){
@@ -811,7 +822,7 @@ function collect(g){
   }));
   return{acc,shots,team};
 }
-const bar=(p)=>p==null?'<span class="muted">—</span>':`<span class="bar"><span class="num">${p} %</span><i><b style="width:${p}%"></b></i></span>`;
+const bar=(p)=>p==null?'<span class="muted">—</span>':`<span class="bar"><span class="num">${p} %</span><i><b style="transform:scaleX(${p / 100})"></b></i></span>`;
 /* mapa poloh: kde kameny zastavily po hodu (před posunutím dalšími kameny), barva = hodnocení */
 let mapF={team:'us',player:'',shot:''};
 function mapPoints(list,team,player,shot){const pts=[];
@@ -1006,7 +1017,7 @@ function seasonHTML(g){
   });
   useFmt(cur());
   const pc=(sum,n)=>n?Math.round(sum/n):null;
-  const spark=per=>`<span class="spark" aria-hidden="true">${list.map((_,i)=>per[i]==null?'<i class="na"></i>':`<i style="height:${Math.max(6,per[i])}%" class="${per[i]>=75?'hi':per[i]>=50?'mid':'lo'}" title="${per[i]} %"></i>`).join('')}</span>`;
+  const spark=per=>`<span class="spark" aria-hidden="true">${list.map((_,i)=>per[i]==null?'<i class="na"></i>':`<i style="transform:scaleY(${Math.max(6, per[i]) / 100})" class="${per[i]>=75?'hi':per[i]>=50?'mid':'lo'}" title="${per[i]} %"></i>`).join('')}</span>`;
   const trend=per=>{const v=list.map((_,i)=>per[i]).filter(x=>x!=null);if(v.length<4)return'<span class="muted">—</span>';const h=Math.floor(v.length/2),a=v.slice(0,h),b=v.slice(-h),m=z=>z.reduce((s,x)=>s+x,0)/z.length,dd=Math.round(m(b)-m(a));
     return `<span class="trend ${dd>=3?'up':dd<=-3?'down':''}">${dd>=3?'▲ +':dd<=-3?'▼ ':'● '}${dd>=3||dd<=-3?dd+' %':'stabilní'}</span>`};
   const teamPer={};rows.forEach((r,i)=>teamPer[i]=r.pu);
@@ -1098,22 +1109,27 @@ document.getElementById('app').addEventListener('click',ev=>{
   const end=g?g.ends[curEnd]:null,s=end?end.stones[curStone]:null;
   switch(a){
     case'rjump':{const q=$('#rules-q');if(q&&q.value){q.value='';filterRules('')}const t=document.getElementById('rule-'+v);if(t)t.scrollIntoView({block:'start'});return}
+    case'focus-toggle':focusMode=!focusMode;focusHeaderOpen=false;focusDrawer=null;tab='ends';syncFocusLayout();render();return;
+    case'focus-exit':focusMode=false;focusHeaderOpen=false;focusDrawer=null;syncFocusLayout();render();return;
+    case'focus-header':focusHeaderOpen=!focusHeaderOpen;syncFocusLayout();renderBody();return;
+    case'focus-drawer':focusDrawer=focusDrawer===v?null:v;renderWork();return;
+    case'focus-close':focusDrawer=null;renderWork();return;
     case'undo':doUndo();return;
     case'theme':setTheme(isDark()?'light':'dark');return;
     case'rcopy':{const ta=$('#report-text');if(!ta)return;ta.value=reportText(g);const fb=()=>{ta.focus();ta.select();setStatus('Text je označený, zkopírujte ho (Ctrl+C).')};
       try{navigator.clipboard.writeText(ta.value).then(()=>setStatus('Shrnutí zkopírováno. Vložte ho do zprávy týmu.'),fb)}catch(e){fb()}return}
     case'rdl':{const ta=$('#report-text');if(!ta)return;ta.value=reportText(g);saveFile('curling-shrnuti-'+(g.date||todayISO())+'.txt',ta.value).then(r=>setStatus(r==='saved'?'Shrnutí staženo.':r==='declined'?'Stažení bylo zrušeno.':'Soubor se tady nedá stáhnout. Použijte Kopírovat shrnutí.'));return}
-    case'sn':seasonN=+v;renderBody();return;
+    case'sn':seasonN=Number(v);renderBody();return;
     case'opengame':if(games[v]){curId=v;lsSet('curl.cur',curId);confirmDel=false;resetEndPos(0);tab='summary';render()}return;
     case'metatoggle':metaOpen=!metaOpen;confirmDel=false;renderMeta();renderBoard();applyRO();return;
     case'bmore':moreOpen=!moreOpen;renderTabs();return;
-    case'tab':moreOpen=false;tab=v;renderTabs();renderBody();applyRO();
+    case'tab':moreOpen=false;tab=v;if(focusMode&&v!=='ends'){focusMode=false;focusDrawer=null;focusHeaderOpen=false;renderHeader();}syncFocusLayout();renderTabs();renderBody();applyRO();
       /* na mobilu a tabletu začít každou záložku od začátku stránky */
       try{if(matchMedia('(max-width:1180px), (pointer:coarse)').matches){document.scrollingElement.scrollTop=0;window.scrollTo(0,0)}}catch(e){}
       return;
     case'end':resetEndPos(+v);renderEndbar();if(tab==='order')renderOrder();else renderWork();return;
     case'addend':g.ends.push(newEnd());touch();resetEndPos(g.ends.length-1);renderBoard();renderMeta();renderEndbar();if(tab==='order')renderOrder();else renderWork();return;
-    case'stone':curStone=+v;movingK=null;if(mode!=='place'&&curStone===0)mode='place';
+    case'stone':curStone=Number(v);movingK=null;if(mode!=='place'&&curStone===0)mode='place';
       if(tab!=='ends'){tab='ends';renderTabs();renderBody();applyRO();window.scrollTo({top:0})}else renderWork();return;
     case'prev':if(curStone>0){curStone--;movingK=null;if(curStone===0)mode='place'}renderWork();return;
     case'next':if(curStone<FM.stones-1){curStone++;movingK=null}renderWork();return;
@@ -1121,7 +1137,7 @@ document.getElementById('app').addEventListener('click',ev=>{
     case'mode':mode=v;movingK=null;renderWork();return;
     case'shot':s.shot=s.shot===v?'':v;s.shotManual=true;s.shotAuto=false;break;
     case'turn':s.turn=s.turn===v?'':v;break;
-    case'rate':{const nv=+v,was=isRated(s);s.rating=s.rating===nv?'':nv;
+    case'rate':{const nv=Number(v),was=isRated(s);s.rating=s.rating===nv?'':nv;
       if(!was&&isRated(s)&&thrown(s)&&curStone<FM.stones-1&&curStone===lastThrown(end)&&!thrown(end.stones[curStone+1])){touch();curStone++;mode='place';movingK=null;renderWork();return}
       break}
     case'out':{const val=v==='out'?true:v;s.out=s.out===val?false:val;if(s.out){s.x=null;s.y=null;s.moves=[];}break}
@@ -1144,15 +1160,15 @@ document.getElementById('app').addEventListener('click',ev=>{
       touch();renderWork();return}
     case'subadd':{const t=b.dataset.t,T=g[t];if(g.subs[t])return;
       const eS=$(`#sub-${t}-end`),oS=$(`#sub-${t}-out`),iS=$(`#sub-${t}-in`),xI=$(`#sub-${t}-inx`),msg=$(`#sub-${t}-msg`);
-      const inn=(iS.value==='__custom'?(xI.value||''):iS.value).trim(),pos=+oS.value,se=+eS.value;
+      const inn=(iS.value==='__custom'?(xI.value||''):iS.value).trim(),pos=Number(oS.value),se=Number(eS.value);
       if(!inn){if(msg)msg.textContent='Napište jméno nastupujícího hráče.';if(xI)xI.focus();return}
       if(Array.from({length:FM.players},(_,p)=>p).some(p=>dispName(T.players[p],p)===inn)){if(msg)msg.textContent=inn+' už v sestavě hraje. Vyberte náhradníka.';return}
       g.subs[t]={end:se,pos,in:inn};touch();renderBody();renderEndbar();applyRO();setStatus(`Střídání zapsáno: ${T.name}, od endu ${se+1}.`);return}
     case'subdel':{const t=b.dataset.t;g.subs[t]=null;touch();renderBody();applyRO();setStatus('Střídání zrušeno.');return}
     case'goal':end.tactic.goal=end.tactic.goal===v?'':v;break;
     case'met':end.tactic.met=end.tactic.met===v?'':v;break;
-    case'trate':end.tactic.rating=end.tactic.rating===+v?0:+v;break;
-    case'srate':{const f=b.dataset.f;g.summary[f]=g.summary[f]===+v?0:+v;touch();renderBody();applyRO();return}
+    case'trate':end.tactic.rating=end.tactic.rating===Number(v)?0:Number(v);break;
+    case'srate':{const f=b.dataset.f;g.summary[f]=g.summary[f]===Number(v)?0:Number(v);touch();renderBody();applyRO();return}
     case'newgame':{const n=newGame((cur()&&cur().format)||'classic');games[n.id]=n;curId=n.id;lsSet('curl.cur',curId);tab='ends';metaOpen=true;confirmDel=false;resetEndPos(0);scheduleSave(n.id);render();
       setTimeout(()=>{const el=$('#m-us-name');if(el){el.focus();el.select()}},50);return}
     case'loadsample':{const n=sampleGame();games[n.id]=n;curId=n.id;resetEndPos(0);scheduleSave(n.id);render();return}
@@ -1183,8 +1199,8 @@ document.getElementById('app').addEventListener('input',ev=>{
   if(id==='m-date'){g.date=el.value;touch();renderBoard();refreshPicker();return}
   if(id==='s-note'){s.note=el.value;touch();return}
   if(id==='t-note'){end.tactic.note=el.value;touch();return}
-  if(id==='sc-us'||id==='sc-them'){const k=id==='sc-us'?'us':'them';const v=el.value===''?null:Math.max(0,Math.min(8,parseInt(el.value,10)||0));end.score[k]=v;touch();renderBoard();renderEndbar();if(g.ends.every(endPlayed)&&backupDue())setStatus('Zápas je dohraný. Stáhněte si zálohu v nabídce Záloha.',8000);return}
-  const sm=/^sum-(worked|improve|conclusion)$/.exec(id);if(sm){g.summary[sm[1]]=el.value;touch();return}
+  if(id==='sc-us'||id==='sc-them'){const k=id==='sc-us'?'us':'them';end.score[k]=el.value===''?null:Math.max(0,Math.min(8,parseInt(el.value,10)||0));touch();renderBoard();renderEndbar();if(g.ends.every(endPlayed)&&backupDue())setStatus('Zápas je dohraný. Stáhněte si zálohu v nabídce Záloha.',8000);return}
+  const sm=/^sum-(worked|improve|conclusion)$/.exec(id);if(sm){g.summary[sm[1]]=el.value;touch()}
 });
 document.getElementById('app').addEventListener('change',ev=>{
   const el=ev.target,id=el.id,g=cur();
@@ -1204,12 +1220,12 @@ document.getElementById('app').addEventListener('change',ev=>{
     if(curEnd>=n)resetEndPos(n-1);touch();render();return}
   if(id==='s-player'){const k=curStone,t=teamOf(g,curEnd,k),p=posOf(k);if(p<0)return;end.stones[k].pname=el.value===lineupFor(g,curEnd,t)[p]?null:el.value;touch();renderWork();return}
   const mf=/^mdf-(us|them)$/.exec(id);
-  if(mf){end.mdFirst[mf[1]]=+el.value;touch();renderWork();return}
+  if(mf){end.mdFirst[mf[1]]=Number(el.value);touch();renderWork();return}
   const si=/^sub-(us|them)-in$/.exec(id);
   if(si){const x=$(`#sub-${si[1]}-inx`);if(x){x.hidden=el.value!=='__custom';if(!x.hidden)x.focus()}return}
-  if(id==='hm-sel'){end.hammer=el.value||null;touch();renderEndbar();renderWork();return}
+  if(id==='hm-sel'){end.hammer=el.value||null;touch();renderEndbar();renderWork()}
 });
-function refreshPicker(){const sel=$('#gamesel');if(!sel)return;const g=cur();const o=sel.querySelector(`option[value="${curId}"]`);if(o&&g){o.textContent=gameLabel(g);const sc=sel.querySelector('selectedcontent');if(sc)sc.textContent=o.textContent}}
+function refreshPicker(){const sel=$('#gamesel');if(!sel)return;const g=cur();const o=sel.querySelector(`option[value="${curId}"]`);if(o&&g){o.textContent=gameLabel(g);const sc=sel.getElementsByTagName('selectedcontent')[0];if(sc)sc.textContent=o.textContent}}
 document.addEventListener('keydown',ev=>{
   if((ev.ctrlKey||ev.metaKey)&&!ev.shiftKey&&ev.key.toLowerCase()==='z'&&cur()&&!ev.target.closest('input,textarea,select')){ev.preventDefault();doUndo();return}
   if(tab!=='ends'||!cur())return;if(ev.target.closest('input,textarea,select'))return;
@@ -1235,8 +1251,8 @@ try{matchMedia(PHONE_MQ).addEventListener('change',()=>{if(view==='house'&&cur()
 /* ---------- boot ---------- */
 render();
 function restoreFrom(text){let n=0;
-  try{const o=JSON.parse(text||'');const src=o&&o.games?o.games:o;if(!src||typeof src!=='object')throw 0;
-    for(const id in src){const gg=src[id];if(gg&&gg.ends){games[id]=normalize(Object.assign(clone(gg),{id}));n++}}}catch(e){n=-1}
+  try{const o=JSON.parse(text||'');const src=o&&o.games?o.games:o;if(!src||typeof src!=='object'){n=-1}
+    else for(const id in src){const gg=src[id];if(gg&&gg.ends){games[id]=normalize(Object.assign(clone(gg),{id}));n++}}}catch(e){n=-1}
   const msg=t=>{const m=$('#bk-msg');if(m)m.textContent=t};
   if(n<=0){msg('Záloha se nedá přečíst. Nahrajte soubor stažený v nabídce Záloha.');return}
   saveLocal();if(!curId||!games[curId])pickDefault();bkOpen=false;undoFor=null;render();msg('Obnoveno zápasů: '+n+'. Můžete pokračovat v zápisu.');}
