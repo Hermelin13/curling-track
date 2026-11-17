@@ -4,12 +4,11 @@
  * Navigace v souboru (vyhledejte názvy sekcí):
  * 1) Konstanty / FORMATS / datové továrny / normalize
  * 2) Ukázka, herní logika, simulace kamenů a skóre
- * 3) Stav aplikace / localStorage / autosave / undo
+ * 3) Stav aplikace / Cloudflare D1 autosave / undo
  * 4) Vykreslování UI včetně statistiky a pravidel
  * 5) Delegované události / ovládání / start
  *
- * Napojení API: začněte funkcemi loadLocal, doSave, saveLocal,
- * flushSaves a restoreFrom (viz PREDANI.md a docs/ARCHITEKTURA.md).
+ * API: js/cloud.js. Ukládání zápasů: doSave(), flushSaves(), loadCloudGames().
  * Pravidla pro záložku Pravidla jsou v js/rules-data.js.
  */
 (function(){
@@ -58,7 +57,7 @@ function newStone(){return{pname:null,shot:'',turn:'',x:null,y:null,out:false,ra
 function newEnd(fm=FM){const st=Array.from({length:fm.stones},newStone);
   if(fm.preset){presetPos(null).forEach((p,i)=>Object.assign(st[i],{x:p.x,y:p.y,preset:true}))}
   return{stones:st,score:{us:null,them:null},hammer:null,pp:null,mdFirst:{us:null,them:null},tactic:{rating:0,goal:'',met:'',note:''}}}
-function newGame(fk='classic'){const fm=FORMATS[fk];return{id:newId(),format:fk,event:'',date:todayISO(),us:{name:'Náš tým',color:'red',players:['','','',''],alts:['',''],coach:''},them:{name:'Soupeř',players:['','','',''],alts:['',''],coach:''},hammerStart:'them',subs:{us:null,them:null},ends:Array.from({length:fm.ends},()=>newEnd(fm)),summary:{tactic:0,exec:0,mental:0,worked:'',improve:'',conclusion:''},sample:false,created:Date.now(),updated:Date.now()}}
+function newGame(fk='classic'){const fm=FORMATS[fk];const team=window.CurlCloud?.me();const roster=window.CurlCloud?.roster()||[];return{id:newId(),format:fk,event:'',date:todayISO(),us:{name:team?.teamName||'Náš tým',color:'red',players:Array.from({length:4},(_,i)=>roster[i]||''),alts:['',''],coach:''},them:{name:'Soupeř',players:['','','',''],alts:['',''],coach:''},hammerStart:'them',subs:{us:null,them:null},ends:Array.from({length:fm.ends},()=>newEnd(fm)),summary:{tactic:0,exec:0,mental:0,worked:'',improve:'',conclusion:''},sample:false,created:Date.now(),updated:Date.now()}}
 function normalize(g){
   if(!FORMATS[g.format])g.format='classic';useFmt(g);
   const b=newGame(g.format);
@@ -292,7 +291,6 @@ function gameLabel(g){return `${g.us.name} – ${g.them.name}`+(g.date?' · '+fm
 function fmtDate(s){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');return m?`${+m[3]}. ${+m[2]}. ${m[1]}`:s}
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function lsOK(){try{localStorage.setItem('curl.t','1');localStorage.removeItem('curl.t');return true}catch(e){return false}}
 function pickDefault(){const ids=sortedIds();const rem=lsGet('curl.cur');curId=ids.includes(rem)?rem:(ids[0]||null);resetEndPos(0)}
 function resetEndPos(e){curEnd=e;const g=cur();if(!g){curStone=0;return}useFmt(g);if(curEnd>=g.ends.length)curEnd=0;const l=lastThrown(g.ends[curEnd]);curStone=Math.min(l+1,FM.stones-1);movingK=null;mode='place'}
 
@@ -337,17 +335,59 @@ function saveFile(name,txt){
   try{downloadText(name,txt);return Promise.resolve('saved')}catch(e){return Promise.resolve('unavailable')}
 }
 function downloadText(name,txt){const url=URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
-function scheduleSave(id){clearTimeout(saveTimers[id]);saveTimers[id]=setTimeout(()=>doSave(id),600);setStatus('Ukládám…')}
-function doSave(id){
-  delete saveTimers[id];
+/* Cloud storage: no match data is persisted in this browser.
+ * A trailing debounce groups edits, a 30 s cap prevents endless postponement.
+ * The API uses optimistic revision checks to prevent silent overwrites. */
+const cloudRevs={},cloudPending=new Map(),cloudSaving=new Map();
+const CLOUD_DEBOUNCE=2500,CLOUD_MAX_WAIT=30000;
+function scheduleSave(id){
   const g=games[id];if(!g)return;
-  saveLocal();setStatus('Uloženo v tomto prohlížeči')
+  let p=cloudPending.get(id);
+  if(!p){p={since:Date.now()};cloudPending.set(id,p)}
+  clearTimeout(saveTimers[id]);
+  const delay=Math.max(0,Math.min(CLOUD_DEBOUNCE,CLOUD_MAX_WAIT-(Date.now()-p.since)));
+  saveTimers[id]=setTimeout(()=>{delete saveTimers[id];doSave(id)},delay);
+  setStatus('Čeká na uložení do cloudu…');
 }
-function saveLocal(){lsSet('curl.games',JSON.stringify(games))}
-/* uložit hned, když se stránka zavírá nebo jde do pozadí (zamčený telefon, přepnutí aplikace) – jinak by se ztratila změna z posledních 0,6 s */
-function flushSaves(){const ids=Object.keys(saveTimers);if(!ids.length)return;ids.forEach(id=>{clearTimeout(saveTimers[id]);delete saveTimers[id]});saveLocal()}
-addEventListener('pagehide',flushSaves);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushSaves()});
-function loadLocal(){try{const o=JSON.parse(lsGet('curl.games')||'{}');for(const id in o)games[id]=normalize(o[id])}catch(e){}}
+async function doSave(id){
+  clearTimeout(saveTimers[id]);delete saveTimers[id];
+  if(cloudSaving.has(id))return cloudSaving.get(id);
+  if(!cloudPending.has(id)||!games[id])return;
+  const snapshot=JSON.stringify(games[id]);
+  const request=(async()=>{
+    try{
+      const result=await CurlCloud.putGame(JSON.parse(snapshot),cloudRevs[id]||0);
+      cloudRevs[id]=result.revision;
+      if(games[id]&&JSON.stringify(games[id])===snapshot){cloudPending.delete(id);setStatus('Uloženo v databázi Cloudflare D1.')}
+      else if(games[id]){cloudPending.set(id,{since:Date.now()});}
+    }catch(e){
+      if(e.status===409){cloudPending.get(id).conflict=true;setStatus('KONFLIKT: zápas byl změněn na jiném zařízení. Neobnovujte stránku, stáhněte si zálohu a vyřešte konflikt.',120000)}
+      else{setStatus('Nepodařilo se uložit: '+e.message+' Změny zůstávají jen v otevřené stránce.',30000);}
+    }
+  })();
+  cloudSaving.set(id,request);
+  await request;cloudSaving.delete(id);
+  if(cloudPending.has(id)&&games[id]&&!cloudPending.get(id).conflict){
+    clearTimeout(saveTimers[id]);saveTimers[id]=setTimeout(()=>{delete saveTimers[id];doSave(id)},cloudPending.get(id).since===Date.now()?CLOUD_DEBOUNCE:5000);
+  }
+}
+function flushSaves(){for(const id of cloudPending.keys())if(games[id])void doSave(id)}
+addEventListener('pagehide',flushSaves);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushSaves()});
+addEventListener('online',flushSaves);
+addEventListener('beforeunload',ev=>{if(cloudPending.size){ev.preventDefault();ev.returnValue=''}});
+async function loadCloudGames(){
+  const result=await CurlCloud.getGames();
+  for(const row of result.games){games[row.game.id]=normalize(row.game);cloudRevs[row.game.id]=row.revision}
+}
+async function deleteCloudGame(id){
+  clearTimeout(saveTimers[id]);delete saveTimers[id];
+  if(cloudSaving.has(id))await cloudSaving.get(id);
+  clearTimeout(saveTimers[id]);delete saveTimers[id];
+  if(cloudRevs[id])await CurlCloud.deleteGame(id,cloudRevs[id]);
+  cloudPending.delete(id);delete cloudRevs[id];delete games[id];
+  confirmDel=false;metaOpen=false;pickDefault();render();setStatus('Zápas byl smazán z databáze.');
+}
 
 /* ---------- render ---------- */
 function render(){useFmt(cur());if(undoFor!==curId){undoStack=[];lastSnap=cur()?JSON.stringify(cur()):null;undoFor=curId}syncFocusLayout();renderHeader();renderBoard();renderMeta();renderTabs();renderBody();applyRO()}
@@ -366,7 +406,7 @@ function renderHeader(){
     <div class="brand"><span class="logo-tile">${logo}</span><div><div class="eyebrow">Trenérský zápis</div><h1>Curlingový zápisník</h1></div></div>
     <div class="picker">
       <label class="lbl" for="gamesel">Zápas</label>
-      <select id="gamesel" class="nav" ${opts?'':'disabled'}><button><selectedcontent></selectedcontent></button>${opts||'<option>Žádný zápas</option>'}</select>
+      <select id="gamesel" class="nav" ${opts?'':'disabled'}>${opts||'<option>Žádný zápas</option>'}</select>
       <button class="btn primary ed" data-act="newgame">${icon('plus')}<span>Nový zápas</span></button>
       <details class="bk" id="bkd" ${bkOpen?'open':''}><summary class="btn">${icon('backup')}<span>Záloha</span> <i class="due" title="Od poslední zálohy přibyla data. Doporučujeme stáhnout zálohu." ${backupDue()?'':'hidden'}></i></summary>
         <div class="bkin">
@@ -415,8 +455,8 @@ function renderMeta(){
           <div class="field"><label class="lbl" for="m-ends">Počet endů</label><input type="number" inputmode="numeric" id="m-ends" min="1" max="12" value="${g.ends.length}"></div>
         </div>
         <div class="row2">
-          <div class="field"><label class="lbl" for="m-color">Naše barva</label><select id="m-color"><button><selectedcontent></selectedcontent></button><option value="red" ${g.us.color==='red'?'selected':''}>Červená</option><option value="yellow" ${g.us.color==='yellow'?'selected':''}>Žlutá</option></select></div>
-          <div class="field"><label class="lbl" for="m-hammer">Výhoda v 1. endu</label><select id="m-hammer"><button><selectedcontent></selectedcontent></button><option value="us" ${g.hammerStart==='us'?'selected':''}>Náš tým</option><option value="them" ${g.hammerStart==='them'?'selected':''}>Soupeř</option></select></div>
+          <div class="field"><label class="lbl" for="m-color">Naše barva</label><select id="m-color"><option value="red" ${g.us.color==='red'?'selected':''}>Červená</option><option value="yellow" ${g.us.color==='yellow'?'selected':''}>Žlutá</option></select></div>
+          <div class="field"><label class="lbl" for="m-hammer">Výhoda v 1. endu</label><select id="m-hammer"><option value="us" ${g.hammerStart==='us'?'selected':''}>Náš tým</option><option value="them" ${g.hammerStart==='them'?'selected':''}>Soupeř</option></select></div>
         </div>
       </div>
       <div class="fieldset">
@@ -628,7 +668,7 @@ function ppUsedBy(g,t,except){return g.ends.findIndex((en,i)=>i!==except&&en.pp&
 function mdPanelHTML(g){
   const e=curEnd,end=g.ends[e],h=hammerFor(g,e),used=ppUsedBy(g,h,e);
   const ppOk=e<8&&used<0;
-  const r=t=>{const ro=rosterFor(g,e,t),f=mdFirstFor(g,e,t);return `<div class="field"><label class="lbl" for="mdf-${t}">${esc(g[t].name)}: 1. a 5. kámen hází</label><select id="mdf-${t}"><button><selectedcontent></selectedcontent></button>${ro.map((n,i)=>`<option value="${i}" ${i===f?'selected':''}>${esc(n)}</option>`).join('')}</select></div>`};
+  const r=t=>{const ro=rosterFor(g,e,t),f=mdFirstFor(g,e,t);return `<div class="field"><label class="lbl" for="mdf-${t}">${esc(g[t].name)}: 1. a 5. kámen hází</label><select id="mdf-${t}">${ro.map((n,i)=>`<option value="${i}" ${i===f?'selected':''}>${esc(n)}</option>`).join('')}</select></div>`};
   return `<div class="panel" id="md-panel"><h3>Rozestavení endu ${e+1}</h3>
     <div class="field"><span class="lbl">Umístěné kameny</span><div class="seg" role="group" aria-label="Rozestavení">
       <button class="${!end.pp?'on':''}" data-act="pp" data-v="">Standardní</button>
@@ -736,7 +776,7 @@ function editorHTML(g){
     <div class="edhead"><span class="big">Kámen ${lab(k)}</span><span class="dot c-${colorOf(g,team)}"></span><span>${esc(g[team].name)}</span></div>
     ${rbox}
     <div class="row2">
-      <div class="field"><label class="lbl" for="s-player">Hráč</label><select id="s-player"><button><selectedcontent></selectedcontent></button>${opts}</select></div>
+      <div class="field"><label class="lbl" for="s-player">Hráč</label><select id="s-player">${opts}</select></div>
       <div class="field"><span class="lbl">Rotace</span><div class="seg" role="group" aria-label="Rotace">${['In','Out'].map(v=>`<button class="${s.turn===v?'on':''}" data-act="turn" data-v="${v}">${v}-turn</button>`).join('')}</div></div>
     </div>
     <div class="field"><span class="lbl">Rána ${s.shotAuto&&s.shot?'<span class="sugg" title="Aplikace ránu odhadla podle toho, kde kámen skončil a co vyřadil nebo posunul. Klepnutím na jinou ránu ji opravíte.">✦ návrh podle hodu</span>':''}</span><div class="chips">${SHOTS.map(v=>`<button class="chip ${s.shot===v?'on':''} ${s.shot===v&&s.shotAuto?'auto':''}" data-act="shot" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div></div>
@@ -789,7 +829,7 @@ function resultHTML(g){
       <label class="tn r" for="sc-them"><span>${esc(g.them.name)}</span><span class="dot c-${colorOf(g,'them')}"></span></label>
     </div>
     ${autoTxt?`<div class="auto"><span>Podle poloh kamenů: <b>${autoTxt}</b></span><button class="btn small ed" data-act="useauto">Použít</button></div>`:''}
-    <div class="field"><label class="lbl" for="hm-sel">Výhoda</label><select id="hm-sel"><button><selectedcontent></selectedcontent></button><option value="" ${!end.hammer?'selected':''}>Automaticky (${esc(g[ah].name)})</option><option value="us" ${end.hammer==='us'?'selected':''}>${esc(g.us.name)}</option><option value="them" ${end.hammer==='them'?'selected':''}>${esc(g.them.name)}</option></select></div>
+    <div class="field"><label class="lbl" for="hm-sel">Výhoda</label><select id="hm-sel"><option value="" ${!end.hammer?'selected':''}>Automaticky (${esc(g[ah].name)})</option><option value="us" ${end.hammer==='us'?'selected':''}>${esc(g.us.name)}</option><option value="them" ${end.hammer==='them'?'selected':''}>${esc(g.them.name)}</option></select></div>
   </div>`;
 }
 function tacticHTML(g){
@@ -843,7 +883,7 @@ function mapPanel(list,teams,scope){
   const players=[...new Set(mapPoints(list,mapF.team,'','').map(p=>p.nm).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'cs'));
   if(mapF.player&&!players.includes(mapF.player))mapF.player='';
   const pts=mapPoints(list,mapF.team,mapF.player,mapF.shot);
-  const sel=(id,opts,val)=>`<select id="${id}" class="nav"><button><selectedcontent></selectedcontent></button>${opts.map(([v,l])=>`<option value="${esc(v)}" ${v===val?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
+  const sel=(id,opts,val)=>`<select id="${id}" class="nav">${opts.map(([v,l])=>`<option value="${esc(v)}" ${v===val?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
   return `<div class="panel mappanel"><h3>Mapa poloh kamenů</h3>
     <div class="mapctl">${teams.length>1?`<div class="field"><label class="lbl" for="map-team">Tým</label>${sel('map-team',teams,mapF.team)}</div>`:''}
       <div class="field"><label class="lbl" for="map-player">Hráč</label>${sel('map-player',[['','Všichni hráči'],...players.map(n=>[n,n])],mapF.player)}</div>
@@ -889,9 +929,9 @@ function subPanel(g,t){
   else{const ao=altOpts(g,t);
     box=`<div class="subbox ed"><b>Zapsat střídání</b><span class="effects">Každý tým může za zápas vystřídat jen jednou. Náhradník hraje na místě hráče, kterého střídá${FM.rotate?', a posouvá se s ním po pozicích':''}.</span>
       <div class="subform">
-        <div class="field"><label class="lbl" for="sub-${t}-end">Od endu</label><select id="sub-${t}-end"><button><selectedcontent></selectedcontent></button>${Array.from({length:n-1},(_,i)=>`<option value="${i+1}" ${i+1===Math.min(Math.max(curEnd,1),n-1)?'selected':''}>${i+2}</option>`).join('')}</select></div>
-        <div class="field"><label class="lbl" for="sub-${t}-out">Odchází</label><select id="sub-${t}-out"><button><selectedcontent></selectedcontent></button>${ids.map(p=>`<option value="${p}">${esc(dispName(T.players[p],p))}${FM.rotate?'':' ('+FM.roster[p]+')'}</option>`).join('')}</select></div>
-        <div class="field"><label class="lbl" for="sub-${t}-in">Přichází</label><select id="sub-${t}-in"><button><selectedcontent></selectedcontent></button>${ao.map(o=>`<option value="${esc(o.v)}">${esc(o.l)}</option>`).join('')}<option value="__custom">Jiné jméno…</option></select>
+        <div class="field"><label class="lbl" for="sub-${t}-end">Od endu</label><select id="sub-${t}-end">${Array.from({length:n-1},(_,i)=>`<option value="${i+1}" ${i+1===Math.min(Math.max(curEnd,1),n-1)?'selected':''}>${i+2}</option>`).join('')}</select></div>
+        <div class="field"><label class="lbl" for="sub-${t}-out">Odchází</label><select id="sub-${t}-out">${ids.map(p=>`<option value="${p}">${esc(dispName(T.players[p],p))}${FM.rotate?'':' ('+FM.roster[p]+')'}</option>`).join('')}</select></div>
+        <div class="field"><label class="lbl" for="sub-${t}-in">Přichází</label><select id="sub-${t}-in">${ao.map(o=>`<option value="${esc(o.v)}">${esc(o.l)}</option>`).join('')}<option value="__custom">Jiné jméno…</option></select>
           <input type="text" id="sub-${t}-inx" autocomplete="off" placeholder="Napište jméno" hidden></div>
       </div>
       <div class="confirm"><button class="btn small primary" data-act="subadd" data-t="${t}">Zapsat střídání</button><span class="effects" id="sub-${t}-msg" aria-live="polite"></span></div></div>`}
@@ -1002,7 +1042,7 @@ function seasonHTML(g){
   if(!seasonTeam||!teams.includes(seasonTeam))seasonTeam=teams.includes((g.us.name||'').trim())?(g.us.name||'').trim():teams[0]||null;
   let list=all.filter(x=>(x.us.name||'').trim()===seasonTeam).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.created||0)-(b.created||0));
   if(seasonN)list=list.slice(-seasonN);
-  const head=`<div class="panel seasonhead"><div class="field"><label class="lbl" for="season-team">Tým</label><select id="season-team" class="nav"><button><selectedcontent></selectedcontent></button>${teams.map(n=>`<option ${n===seasonTeam?'selected':''}>${esc(n)}</option>`).join('')||'<option>—</option>'}</select></div>
+  const head=`<div class="panel seasonhead"><div class="field"><label class="lbl" for="season-team">Tým</label><select id="season-team" class="nav">${teams.map(n=>`<option ${n===seasonTeam?'selected':''}>${esc(n)}</option>`).join('')||'<option>—</option>'}</select></div>
     <div class="field"><span class="lbl">Období</span><div class="seg" role="group" aria-label="Období">${[[0,'Vše'],[10,'Posledních 10'],[5,'Posledních 5']].map(([n,l])=>`<button class="nav ${seasonN===n?'on':''}" data-act="sn" data-v="${n}">${l}</button>`).join('')}</div></div>
     <p class="effects" style="margin:0;flex-basis:100%">Souhrn všech zápisů týmu v tomto prohlížeči (bez ukázky). Hráči se párují podle jména, proto pište jména pokaždé stejně.</p></div>`;
   if(!list.length)return `<div style="display:flex;flex-direction:column;gap:14px">${head}<div class="empty-state"><h2>Zatím žádné zápasy</h2><p class="muted">Jakmile zapíšete zápasy, uvidíte tu vývoj úspěšnosti hráčů a ran přes celou sezónu.</p></div></div>`;
@@ -1181,9 +1221,10 @@ document.getElementById('app').addEventListener('click',ev=>{
     case'bkrestore':{const ta=$('#bk-text');restoreFrom(ta?ta.value:'');return}
     case'delgame':confirmDel=true;metaOpen=true;renderMeta();applyRO();return;
     case'delno':confirmDel=false;renderMeta();applyRO();return;
-    case'delyes':{const id=curId;delete games[id];clearTimeout(saveTimers[id]);delete saveTimers[id];confirmDel=false;metaOpen=false;
-      saveLocal();setStatus('Zápas smazán');
-      pickDefault();render();return}
+    case'delyes': {
+      void deleteCloudGame(curId).catch(e => setStatus('Smazání selhalo: ' + e.message, 20000));
+      return
+    }
     default:return;
   }
   touch();renderWork();
@@ -1225,7 +1266,7 @@ document.getElementById('app').addEventListener('change',ev=>{
   if(si){const x=$(`#sub-${si[1]}-inx`);if(x){x.hidden=el.value!=='__custom';if(!x.hidden)x.focus()}return}
   if(id==='hm-sel'){end.hammer=el.value||null;touch();renderEndbar();renderWork()}
 });
-function refreshPicker(){const sel=$('#gamesel');if(!sel)return;const g=cur();const o=sel.querySelector(`option[value="${curId}"]`);if(o&&g){o.textContent=gameLabel(g);const sc=sel.getElementsByTagName('selectedcontent')[0];if(sc)sc.textContent=o.textContent}}
+function refreshPicker(){const sel=$('#gamesel');if(!sel)return;const g=cur();const o=sel.querySelector(`option[value="${curId}"]`);if(o&&g){o.textContent=gameLabel(g);}}
 document.addEventListener('keydown',ev=>{
   if((ev.ctrlKey||ev.metaKey)&&!ev.shiftKey&&ev.key.toLowerCase()==='z'&&cur()&&!ev.target.closest('input,textarea,select')){ev.preventDefault();doUndo();return}
   if(tab!=='ends'||!cur())return;if(ev.target.closest('input,textarea,select'))return;
@@ -1249,16 +1290,23 @@ try{matchMedia(PHONE_MQ).addEventListener('change',()=>{if(view==='house'&&cur()
   try{new ResizeObserver(set).observe(h)}catch(e){}addEventListener('resize',set);set();
   const st=()=>h.classList.toggle('stuck',scrollY>4);addEventListener('scroll',st,{passive:true});st();})();
 /* ---------- boot ---------- */
+document.getElementById('app').hidden=true;
 render();
-function restoreFrom(text){let n=0;
+function restoreFrom(text){let n=0;const imported=[];
   try{const o=JSON.parse(text||'');const src=o&&o.games?o.games:o;if(!src||typeof src!=='object'){n=-1}
-    else for(const id in src){const gg=src[id];if(gg&&gg.ends){games[id]=normalize(Object.assign(clone(gg),{id}));n++}}}catch(e){n=-1}
+    else for(const id in src){const gg=src[id];if(gg&&gg.ends){games[id]=normalize(Object.assign(clone(gg),{id}));imported.push(id);n++}}}catch(e){n=-1}
   const msg=t=>{const m=$('#bk-msg');if(m)m.textContent=t};
   if(n<=0){msg('Záloha se nedá přečíst. Nahrajte soubor stažený v nabídce Záloha.');return}
-  saveLocal();if(!curId||!games[curId])pickDefault();bkOpen=false;undoFor=null;render();msg('Obnoveno zápasů: '+n+'. Můžete pokračovat v zápisu.');}
+  for(const id of imported)scheduleSave(id);if(!curId||!games[curId])pickDefault();bkOpen=false;undoFor=null;render();msg('Importováno zápasů: '+n+'. Ukládají se na server.');}
 /* úvodní obrazovka: krátce při otevření, pak se rozplyne */
 (function(){const sp=document.getElementById('splash');if(!sp)return;let reduce=false;try{reduce=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   setTimeout(()=>{sp.classList.add('out');setTimeout(()=>sp.remove(),450)},reduce?250:1150)})();
-loadLocal();pickDefault();loaded=true;
-setStatus(lsOK()?'Zápasy se ukládají jen v tomto prohlížeči. Zálohu stáhnete v nabídce Záloha.':'Tento prohlížeč nepovoluje ukládání. Po zavření stránky se zápis ztratí, průběžně si dělejte zálohu.');render();
+(async()=>{
+  const login=await CurlCloud.boot();
+  if(!login||login.role!=='team')return;
+  try{
+    await loadCloudGames();pickDefault();loaded=true;document.getElementById('app').hidden=false;
+    setStatus('Zápasy načteny z Cloudflare D1.');render();
+  }catch(e){setStatus('Chyba načítání: '+e.message,120000);document.getElementById('app').hidden=true;alert('Nepodařilo se načíst zápasy z databáze. Obnovte stránku: '+e.message)}
+})();
 })();

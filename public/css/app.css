@@ -898,3 +898,17 @@ body.focus-mode .focus-drawer .chip{min-height:32px}
  body.focus-mode .focus-editor>.panel{gap:5px}
 }
 
+/* Cloud login and team management. Only these overlays are independent of app layout. */
+#cloud-ui:empty{display:none}
+.cloud-shade{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.83);display:grid;place-items:center;padding:14px;overflow:auto}
+.cloud-dialog{background:#141820;color:#f8fafc;border:1px solid #394458;border-radius:14px;padding:22px;max-width:560px;width:min(100%,560px);max-height:calc(100dvh - 28px);overflow:auto;display:flex;flex-direction:column;gap:10px}
+.cloud-dialog h2,.cloud-dialog h3{margin:6px 0;color:#fff}
+.cloud-dialog label{font-size:.85rem;font-weight:700}
+.cloud-dialog input,.cloud-dialog textarea{width:100%;background:#242a35;color:white;border:1px solid #4b5563;border-radius:8px;padding:10px;font:inherit}
+.cloud-dialog p{margin:4px 0;overflow-wrap:anywhere}
+.cloud-btn{border:1px solid #3e5a9a;border-radius:8px;background:#2147a8;color:#fff;padding:10px 12px;font:inherit;font-weight:700;cursor:pointer}
+.cloud-btn:disabled{opacity:.6}
+.cloud-team{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #364152;padding-top:8px}
+#cloud-menu{position:fixed;z-index:150;right:12px;bottom:12px}
+.cloud-menu-btn{font-size:.75rem;box-shadow:0 5px 18px #0008}
+#app[hidden]{display:none!important}

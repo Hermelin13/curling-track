@@ -1,8 +1,14 @@
 {
   "name": "curling-track",
+  "main": "./worker.js",
   "compatibility_date": "2026-11-17",
-  "assets": {
-    "directory": "./public"
-  },
-  "previews": {}
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "curling-track-prod", "database_id": "66e75c71-3f81-40cf-876c-c7dfa5d39746" }
+  ],
+  "previews": {
+    "d1_databases": [
+      { "binding": "DB", "database_name": "curling-track-dev", "database_id": "6f92ba4c-d34e-4553-96e5-2a8e601b89ca" }
+    ]
+  }
 }
